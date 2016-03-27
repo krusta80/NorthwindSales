@@ -10,8 +10,8 @@ app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(__dirname + '/public'));
-app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
-app.use('/angular', express.static(__dirname + '/node_modules/angular'));
+app.use('/bootstrap', express.static(path.join(__dirname, '/node_modules/bootstrap/dist')));
+app.use('/angular', express.static(path.join(__dirname, '/node_modules/angular')));
 
 app.use('/api',router);
 

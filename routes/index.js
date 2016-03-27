@@ -1,44 +1,45 @@
 var express = require('express');
 var router = express.Router();
-var Appointment = require('../models').models.Appointment;
+var SalesPerson = require('../models').models.SalesPerson;
 
-router.get('/appointments', function(req,res,next) {
-	Appointment.find({}).sort({priority: 1, name: 1})
-	.then(function(appointments) {
-		res.send(appointments);
+router.get('/salespeople', function(req,res,next) {
+	SalesPerson.find({})
+	.then(function(salesPeople) {
+		res.send(salesPeople);
 	})
 	.catch(next);
 });
 
-router.post('/appointments', function(req,res,next) {
-	var appointment = new Appointment();
+router.post('/salespeople', function(req,res,next) {
+	var salesPerson = new SalesPerson();
 
-	appointment.name = req.body.name;
-	appointment.priority = req.body.priority;
+	salesPerson.name = req.body.name;
+	salesPerson.regions = req.body.regions;
 
-	appointment.save()
-	.then(function(appointment) {
-		res.send(appointment);
+	salesPerson.save()
+	.then(function(salesPerson) {
+		res.send(salesPerson);
 	})
 	.catch(next);
 });
 
-router.delete('/appointments/:id', function(req,res,next) {
-	Appointment.findByIdAndRemove(req.params.id)
-	.then(function(appointment) {
-		res.send(appointment);
+router.delete('/salespeople/:id', function(req,res,next) {
+	SalesPerson.findByIdAndRemove(req.params.id)
+	.then(function(salesPerson) {
+		res.send(salesPerson);
 	})
 	.catch(next);
 });
 
-router.put('/appointments/:id', function(req,res,next) {
-	Appointment.findById(req.params.id)
-	.then(function(appointment) {
-		appointment.priority = req.body.priority;
-		return appointment.save();
+router.put('/salespeople/:id', function(req,res,next) {
+	SalesPerson.findById(req.params.id)
+	.then(function(salesPerson) {
+		salesPerson.name = req.body.name;
+		salesPerson.regions = req.body.regions;
+		return salesPerson.save();
 	})
-	.then(function(appointment) {
-		res.send(appointment);
+	.then(function(salesPerson) {
+		res.send(salesPerson);
 	})
 	.catch(next);
 });

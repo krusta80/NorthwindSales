@@ -1,57 +1,24 @@
 var mongoose = require('mongoose');
 var Promise = require('bluebird');
-//how about a connect method?
 
-var appointmentSchema = new mongoose.Schema({
+var salesPersonSchema = new mongoose.Schema({
 	name: {type: String, required: true},
-	priority: {type: Number, required: true, min: 1}
+	regions: {type: [String], required: true}
 });
 
-appointmentSchema.virtual('priorityFloor')
-.get(function() {
-	return Math.floor(this.priority);
-});
-
-appointmentSchema.set('toJSON', {
-	virtuals : true
-});
-
-appointmentSchema.pre('validate', function(next) {
-	console.log("  PRE VALIDATE -> "+JSON.stringify(this));
-	if(!this.priority)
-		this.priority = 5;
-	if(this.isNew && this.priority !== this.priorityFloor)
-		throw new Error('Priority must be a whole number!');
+salesPersonSchema.pre('validate', function(next) {
+	var acceptedRegions = {North:true, East:true, West:true, South:true};
+	this.regions = this.regions.filter(function(region) {
+		return acceptedRegions[region];
+	});
+	if(this.regions.length < 1)
+		throw new Error('At least one region is required!');
+	if(this.regions.length > 3)
+		throw new Error('At most three regions allowed!');
 	next();
 });
 
-appointmentSchema.pre('save', function(next) {
-	if(this.isNew)
-		this.priority += getTS();
-	next();
-});
-
-var Appointment = mongoose.model('Appointment',appointmentSchema);
-
-function getTS() {
-	/*	
-		This returns ms since the epoch in decimal form,
-		which ensures that every appointment has a unique 
-		priority, even if the integer portion (priorityFloor)
-		is non-unique.  
-
-		With this system in place, moving an appointment up 
-		and down is as simple as swapping its priority with
-		its upper or lower neighbor respectively.  :)
-
-		Using a timestamp also ensures that a new appointment 
-		is always added directly BELOW any existing appointments 
-		sharing the same priorityFloor.
-	*/
-
-	var ts = new Date();
-	return ts/Math.pow(10,Math.ceil((Math.log(ts)/Math.log(10))));
-}
+var SalesPerson = mongoose.model('SalesPerson',salesPersonSchema);
 
 var _conn = null;
 module.exports = {
@@ -59,7 +26,7 @@ module.exports = {
     if(_conn)
       return _conn;
     _conn = new Promise(function(resolve, reject){
-      mongoose.connect(process.env.CONN || 'mongodb://localhost/johng-spa', function(err){
+      mongoose.connect(process.env.CONN || 'mongodb://localhost/sales', function(err){
           if(err)
             return reject(err);
           resolve(mongoose.connection);
@@ -67,10 +34,8 @@ module.exports = {
     
     });
     return _conn;
-  
-
   },
   models: {
-    Appointment: Appointment
+    SalesPerson: SalesPerson
   }
 };
