@@ -3,8 +3,23 @@
 
 .row {
 	padding: 10px 10px;
+	margin: 3px 3px;
 }
 
 .faded {
 	background-color: #77AAD6;
+}
+
+.maxedOut {
+	background-color: #5DD45D;
+	background-size: 300px;
+}
+
+.crappedOut {
+	background-color: #D68989;
+	border-color: #D68989;
+}
+
+.notOut {
+	background-color: #CCCCCC;
 }

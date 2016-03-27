@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 
 var salesPersonSchema = new mongoose.Schema({
 	name: {type: String, required: true},
-	regions: {type: [String], required: true}
+	regions: {type: [String]}
 });
 
 salesPersonSchema.pre('validate', function(next) {
@@ -11,7 +11,7 @@ salesPersonSchema.pre('validate', function(next) {
 	this.regions = this.regions.filter(function(region) {
 		return acceptedRegions[region];
 	});
-	if(this.regions.length < 1)
+	if(this.isNew && this.regions.length < 1)
 		throw new Error('At least one region is required!');
 	if(this.regions.length > 3)
 		throw new Error('At most three regions allowed!');

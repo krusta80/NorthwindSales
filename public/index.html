@@ -28,34 +28,29 @@
             </div>
             <div class="row">
               <div class="col-sm-2 col-xs-2">
-                <button type="submit" class="pull-center faded" ng-disabled="form.newRegionCount() === 0" ng-click="addSalesPerson()" ng-class="{'btn-Primary': form.newRegionCount() > 0, faded: form.newRegionCount() === 0}">Save</button>
+                <button type="submit" class="pull-center faded" ng-disabled="!form.canSubmit()" ng-click="form.addSalesPerson()" ng-class="{'btn-Primary': form.canSubmit(), faded: !form.canSubmit()}">Save</button>
               </div>    
             </div>
          </form>
 
-        <div class="appointmentList"> 
-          <table class='table'>
-              <thead>
-                  <tr>
-                      <th style="width: 70%">Name</th>
-                      <th style="text-align: right">Priority</th>
-                      <th style="text-align: right"></th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr ng-repeat="(key, appointment) in appointments">
-                      <td>{{appointment.name}}</td>
-                      <td style="text-align: right">
-                          {{appointment.priorityFloor}}
-                      </td>
-                      <td style="text-align: right">
-                          <button ng-click="moveUp(key)" ng-show="!$first">/\</button>
-                          <button ng-click="moveDown(key)" ng-show="!$last">\/</button>
-                          <button ng-click="delete(key)">X</button>
-                      </td>
-                  </tr>
-              </tbody>
-          </table>
+        <div ng-controller="ListController as list">
+          <div class="row">
+            <div class="col-sm-6" ng-repeat="salesPerson in list.salesPeople()"  style="border-style: solid">
+              <div class="row" ng-class="{maxedOut: salesPerson.regions.length === 3, crappedOut: salesPerson.regions.length === 0, notOut: salesPerson.regions.length < 3 && salesPerson.regions.length > 0}" >
+                <div class="col-sm-8 col-xs-8">
+                  <b>{{salesPerson.name}}</b>
+                </div>
+                <div class="col-sm-2 col-xs-2">
+                  <button class="btn-xs btn-Danger" ng-click="list.removeSalesPerson(salesPerson._id)" ng-disabled="salesPerson.regions.length > 0" ng-class="{'crappedOut': salesPerson.regions.length > 0}">DELETE</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3 col-xs-3" ng-repeat="region in list.regions()">
+                  <button class="btn-sm" ng-click="list.toggleRegion(salesPerson,region)" ng-disabled="salesPerson.regions.length === 3 && !list.hasRegion(salesPerson,region)" ng-class="{'btn-Primary': list.hasRegion(salesPerson,region)}">{{region}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

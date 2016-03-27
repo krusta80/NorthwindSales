@@ -1,12 +1,5 @@
-salesTeam.controller('FormController', function(FormFactory,SalesPeopleFactory) {
+salesTeam.controller('FormController', function(FormFactory) {
 	
-	this.refreshSalesPeople = function() {
-		SalesPeopleFactory.fetchAll()
-			.then(function(salesPeople) {
-				this.salesPeople = salesPeople;
-		});		
-	};
-
 	this.regions = function() {
 		return FormFactory.regions;
 	};
@@ -22,70 +15,20 @@ salesTeam.controller('FormController', function(FormFactory,SalesPeopleFactory) 
 	this.isActiveRegion = function(region) {
 		return FormFactory.isActiveRegion(region);
 	};	
-	
 
-	this.moveUp = function(index) {
-		this.swapSpots(index - 1, index);
+	this.canSubmit = function() {
+		return FormFactory.getNewRegionCount() > 0 && this.name;
+	};
+
+	this.addSalesPerson = function() {
+		FormFactory.addSalesPerson(this.name)
+			.then(function(salesPerson) {
+				this.name = "";
+				FormFactory.resetNewRegions();
+				console.log(salesPerson);	
+			}.bind(this));
 	};
 	
-	this.moveDown = function(index) {
-		this.swapSpots(index, index + 1);
-	};
-
-	this.swapSpots = function(index1,index2) {
-		var url1 = '/api/appointments/'+this.appointments[index1]._id;
-		var data1 = { priority: this.appointments[index2].priority };
-		var appt1;
-
-    //consider using $q.all -- these calls are independent.. no?
-		
-		$http.put(url1, data1)
-		.then(function(response) {
-			return response.data;
-		})
-		.then(function(appointment) {
-			console.log("updated appointment " + appointment._id);
-			appt1 = appointment;
-			var url2 = '/api/appointments/' + this.appointments[index2]._id;
-			var data2 = {priority: this.appointments[index1].priority};
-			return $http.put(url2, data2);
-		})
-		.then(function(response) {
-			return response.data;
-		})
-		.then(function(appointment) {
-			console.log("updated appointment " + appointment._id);
-			var appt2 = appointment;
-			this.appointments[index1] = appt2;
-			this.appointments[index2] = appt1;
-		})
-		.catch(console.error.bind(console));
-	};
-	
-	this.delete = function(index) {
-		$http.delete('/api/appointments/' + this.appointments[index]._id)
-		.then(function(response) {
-			return response.data;
-		})
-		.then(function(appointment) {
-			this.appointments.splice(index,1);
-			console.log("removed appointment " + appointment._id);
-		})
-		.catch(console.error.bind(console));
-	};
-
-	this.addProduct = function() {
-		if(isNotAWholeNumber(this.appt.priority)) {
-			this.displayFormError("Priority must be a whole number!");
-			return;
-		}
-		$http.post('/api/appointments', this.appt)
-		.then(function(response) {
-			this.refreshAppointments();
-		})
-		.catch(this.displayFormError);
-	};
-
 	this.displayFormError = function(err) {
 		this.displayError = true;
 		this.errorMessage = "Processing error";
@@ -93,7 +36,31 @@ salesTeam.controller('FormController', function(FormFactory,SalesPeopleFactory) 
 		console.log(err);
 	};
 
-	this.refreshSalesPeople();
-	
 });
 
+salesTeam.controller('ListController', function(ListFactory) {
+
+	this.salesPeople = function() {
+		return ListFactory.getSalesPeople();
+	};
+
+	this.regions = function() {
+		return ListFactory.regions;
+	};
+
+	this.hasRegion = function(salesPerson,region) {
+		return ListFactory.hasRegion(salesPerson,region);
+	};
+
+	this.toggleRegion = function(salesPerson, region) {
+		ListFactory.toggleRegion(salesPerson, region);
+	};
+
+	this.removeSalesPerson = function(id) {
+		ListFactory.removeSalesPerson(id)
+			.then(function(salesPerson) {
+				console.log(salesPerson);	
+			}.bind(this));
+	};
+
+});
