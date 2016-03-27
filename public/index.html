@@ -1,0 +1,64 @@
+<html lang="en">
+  <head>
+    <title>Northwind SPA</title>
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet">
+    <script src="/angular/angular.js"></script>
+    <script src="./scripts/index.js"></script>
+  </head>
+  <body>
+    <div id="main" class="container-fluid" ng-app="spa">
+      <div class="col-xs-10" ng-controller="SpaController">
+        <h2>NorthWind SPA:  Prioritize Yourself</h2>
+        <div ng-show="displayError" class="alert alert-danger">
+          {{errorMessage}}
+        </div>
+        <form class="form-inline" role="form">
+            <div class="row">
+              <div class="col-sm-12">
+                <input class="form-inline" style="width:100%" type="text" id="newName" ng-model="appt.name" name="name" placeholder="name">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <input class="form-inline" style="width:100%" type="text" ng-model="appt.priority" name="priority" class="form-control" placeholder="priority (default 5)">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-2">
+                <button type="submit" class="pull-center" ng-click="addProduct()">Save</button>
+              </div>    
+            </div>
+         </form>
+
+        <div class="appointmentList"> 
+          <table class='table'>
+              <thead>
+                  <tr>
+                      <th style="width: 70%">Name</th>
+                      <th style="text-align: right">Priority</th>
+                      <th style="text-align: right"></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr ng-repeat="(key, appointment) in appointments">
+                      <td>{{appointment.name}}</td>
+                      <td style="text-align: right">
+                          {{appointment.priorityFloor}}
+                      </td>
+                      <td style="text-align: right">
+                          <button ng-click="moveUp(key)" ng-show="!$first">/\</button>
+                          <button ng-click="moveDown(key)" ng-show="!$last">\/</button>
+                          <button ng-click="delete(key)">X</button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer></footer>
+
+    </div>
+  </body>
+</html>
