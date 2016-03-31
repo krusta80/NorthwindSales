@@ -1,4 +1,5 @@
-salesTeam.factory('FormFactory', function(SalesPeopleFactory, $http, $log, $rootScope, $q) {
+//seems a little overcomplicated...
+salesTeam.factory('FormFactory', function(SalesPeopleFactory, $http, $log, $rootScope) {
 	var formObj = {};
 	var newRegions = {};
 	
@@ -22,14 +23,12 @@ salesTeam.factory('FormFactory', function(SalesPeopleFactory, $http, $log, $root
 	};
 
 	formObj.addSalesPerson = function(name) {
-		var deferred = $q.defer();
 		var newSalesPerson = {name: name, regions: getNewRegions()};
-		SalesPeopleFactory.create(newSalesPerson)
+		return SalesPeopleFactory.create(newSalesPerson)
 			.then(function(salesPerson) {
 				deferred.resolve(salesPerson);
-				$rootScope.salesPeople.push(salesPerson);
+				$rootScope.salesPeople.push(salesPerson);//root scope bad.. you don't need it..
 			});
-		return deferred.promise;
 	};
 
 	formObj.resetNewRegions = function() {

@@ -26,7 +26,7 @@ salesTeam.controller('FormController', function(FormFactory) {
 				this.name = "";
 				FormFactory.resetNewRegions();
 				console.log(salesPerson);	
-			}.bind(this));
+			}.bind(this));//not crazy about this -- feels like your factory needs to know about your controller?
 	};
 	
 	this.displayFormError = function(err) {
@@ -39,6 +39,7 @@ salesTeam.controller('FormController', function(FormFactory) {
 });
 
 salesTeam.controller('ListController', function(ListFactory) {
+  // ok so controller as syntac.. i'm fine with that.
 
 	this.salesPeople = function() {
 		return ListFactory.getSalesPeople();
@@ -60,7 +61,7 @@ salesTeam.controller('ListController', function(ListFactory) {
 		ListFactory.removeSalesPerson(id)
 			.then(function(salesPerson) {
 				console.log(salesPerson);	
-			}.bind(this));
+			}.bind(this));//same comment as above comment
 	};
 
 });

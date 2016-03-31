@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Promise = require('bluebird');
 
+//great!
 var salesPersonSchema = new mongoose.Schema({
 	name: {type: String, required: true},
 	regions: {type: [String]}

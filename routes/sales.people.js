@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var SalesPerson = require('../models').models.SalesPerson;
 
-router.get('/salespeople', function(req,res,next) {
+router.get('/', function(req,res,next) {
 	SalesPerson.find({})
 	.then(function(salesPeople) {
 		res.send(salesPeople);
@@ -10,7 +10,7 @@ router.get('/salespeople', function(req,res,next) {
 	.catch(next);
 });
 
-router.post('/salespeople', function(req,res,next) {
+router.post('/', function(req,res,next) {
 	var salesPerson = new SalesPerson();
 
 	salesPerson.name = req.body.name;
@@ -23,7 +23,7 @@ router.post('/salespeople', function(req,res,next) {
 	.catch(next);
 });
 
-router.delete('/salespeople/:id', function(req,res,next) {
+router.delete('/:id', function(req,res,next) {
 	SalesPerson.findByIdAndRemove(req.params.id)
 	.then(function(salesPerson) {
 		res.send(salesPerson);
@@ -31,7 +31,7 @@ router.delete('/salespeople/:id', function(req,res,next) {
 	.catch(next);
 });
 
-router.put('/salespeople/:id', function(req,res,next) {
+router.put('/:id', function(req,res,next) {
 	SalesPerson.findById(req.params.id)
 	.then(function(salesPerson) {
 		salesPerson.name = req.body.name;

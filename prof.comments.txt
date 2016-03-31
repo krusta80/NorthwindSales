@@ -1,0 +1,3 @@
+- it works well.
+- i think it's a little overengineered..
+- you can do this with one controller and one factory -- and if you do, you can avoid rootscope
